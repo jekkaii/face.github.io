@@ -1,7 +1,6 @@
 /* eslint-disable no-unused-vars */
 import React from "react";
 import { useState, useEffect } from "react";
-import { Row, Col, InputGroup, Form } from "react-bootstrap";
 import dayjs from "dayjs";
 import AttendanceSummary from "./AttendanceSummary";
 import DailyAttendance from "./DailyAttendance";
@@ -82,6 +81,7 @@ const AttendanceTabs = () => {
         attendance: [],
       }))
     );
+
   }, [students]);
 
   useEffect(() => {
@@ -118,15 +118,6 @@ const AttendanceTabs = () => {
       )
     );
   };
-
-  // // Filter the info based on the searchTerm
-  // const filteredInfo = sortedData.filter((entry) => {
-  //   const lowerCaseSearchTerm = searchTerm.toLowerCase();
-  //   return (
-  //     entry.name.toLowerCase().includes(lowerCaseSearchTerm) ||
-  //     entry.idNumber.includes(lowerCaseSearchTerm)
-  //   );
-  // });
 
   const items = [
     {
@@ -182,6 +173,7 @@ const AttendanceTabs = () => {
             <ManageStudents
               sortedData={sortedData}
               classCode={selectedClassCode}
+              refreshStudents={() => getStudents(selectedClassCode)}
             />
           </Flex>
         </>

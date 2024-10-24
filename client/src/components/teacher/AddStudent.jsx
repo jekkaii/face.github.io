@@ -1,18 +1,22 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Col, Form, Row } from "react-bootstrap";
 import { Button, Modal, Alert } from "antd";
 import { useStudentStore } from "../../stores/studentStore";
 import "../css/style.css";
 import { PlusOutlined } from "@ant-design/icons";
 
-const AddStudent = ({ onSuccess, classCode }) => {
+const AddStudent = ({ onSuccess, classCode, refreshStudents }) => {
   const [show, setShow] = useState(false);
   const [newStudent, setNewStudent] = useState({ idNumber: "", name: "" });
-  const { addStudent, error, getStudentByID } = useStudentStore();
+  const { addStudent, error, getAllStudents, allStudents } = useStudentStore();
   const [touchedFields, setTouchedFields] = useState({});
   const [errors, setErrors] = useState({});
+
+  useEffect(() => {
+    getAllStudents();
+  }, [getAllStudents]);
 
   const handleClose = () => {
     setNewStudent({ idNumber: "", name: "" });
@@ -59,9 +63,10 @@ const AddStudent = ({ onSuccess, classCode }) => {
 
     if (Object.keys(validationErrors).length === 0) {
       await addStudent(classCode, newStudent);
-
+      
       setNewStudent({ idNumber: "", name: "" });
       handleClose();
+      refreshStudents();
       onSuccess();
     }
   };
@@ -74,8 +79,15 @@ const AddStudent = ({ onSuccess, classCode }) => {
     setErrors((prevErrors) => ({ ...prevErrors, idNumber: fieldErrors.idNumber }));
   
     if (!fieldErrors.idNumber) {
-      const fetchedStudent = await getStudentByID(value);
+      let fetchedStudent = null; 
 
+      allStudents.forEach((student) => {
+        if (String(student.idNumber) === String(value)) {
+          fetchedStudent = student;
+        }
+      });
+
+      console.log("Fetched Student:", fetchedStudent);
       if (fetchedStudent && fetchedStudent.name) {
         setNewStudent((prev) => ({ ...prev, name: fetchedStudent.name }));
       } else {

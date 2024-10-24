@@ -106,32 +106,29 @@ export const getStudents = async (req, res) => {
   }
 };
 
-export const getStudentByID = async (req, res) => {
-  const { idNumber } = req.params; 
-
+export const getAllStudents = async (req, res) => {
   try {
-    const student = await StudentModel.findOne({ idNumber });
+    const students = await StudentModel.find();
 
-    if (!student) {
+    if (!students || students.length === 0) {
       return res.status(404).json({
         success: false,
-        message: "Student not found",
+        message: "No students found",
       });
     }
 
     return res.status(200).json({
       success: true,
-      data: student,
+      data: students,
     });
   } catch (error) {
-    console.error("Error fetching student by ID:", error);
+    console.error("Error fetching all students:", error);
     return res.status(500).json({
       success: false,
       message: "Server error: " + error.message,
     });
   }
 };
-
 
 export const countStudents = async (req, res) => {
   try {

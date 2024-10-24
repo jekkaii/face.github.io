@@ -6,6 +6,7 @@ const API_URL = "http://localhost:3001/api/teacher";
 axios.defaults.withCredentials = true; // set withCredentials to true
 
 export const useStudentStore = create((set) => ({
+  allStudents: [],
   students: [],
   error: null,
   success: null,
@@ -25,26 +26,20 @@ export const useStudentStore = create((set) => ({
     }
   },
 
-  getStudentByID: async (idNumber) => {
+  getAllStudents: async () => {
     set({ isLoading: true });
     try {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-    
-      const response = await axios.get(`${API_URL}/students/id/${idNumber}`);
-  
-      if (response.status === 200 && response.data.data) {
-        const student = response.data.data;
-        set({ student, isLoading: false, error: null });
-  
-        return student;
-      } else {
-        set({ isLoading: false });
-        return null; // Student not found, return null
-      }      
+      const response = await axios.get(`${API_URL}/students/all`);
+      if (response.status === 200) {
+        const allStudents = response.data.data.map(student => ({
+          idNumber: student.idNumber,
+          name: student.name
+        }));        
+        
+        set({ allStudents, isLoading: false, error: null });
+      }
     } catch (error) {
-      console.log("Student does not exist");
-      set({ isLoading: false });
-      return null;
+      set({ error, isLoading: false });
     }
   },
   

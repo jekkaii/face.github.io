@@ -1,7 +1,15 @@
-import React from 'react';
-import '../css/style.css'; // Create your CSS file for styling
+import React, { useEffect } from 'react';
+import '../css/style.css';
 
 const Notification = ({ message, type, onClose }) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose();
+    }, 2000);
+
+    return () => clearTimeout(timer);
+  }, [onClose, message]);
+  
   return (
     <div className={`notification ${type}`}>
       <p>{message}</p>

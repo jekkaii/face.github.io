@@ -4,7 +4,7 @@ import { Button, Modal, Alert } from "antd";
 import { useStudentStore } from "../../stores/studentStore";
 import "../css/style.css";
 
-const EditStudent = ({ isOpen, onClose, onConfirm, idNumber, name }) => {
+const EditStudent = ({ isOpen, onClose, onConfirm, idNumber, name, refreshStudents}) => {
   const [newStudent, setNewStudent] = useState({ idNumber: "", name: "" });
   const { updateStudent, error } = useStudentStore();
   const [errors, setErrors] = useState({}); // State to hold validation errors
@@ -36,6 +36,7 @@ const EditStudent = ({ isOpen, onClose, onConfirm, idNumber, name }) => {
       await updateStudent(idNumber, newStudent);
       setNewStudent({ idNumber: "", name: "" });
       onClose();
+      refreshStudents();
       onConfirm();
     }
   };

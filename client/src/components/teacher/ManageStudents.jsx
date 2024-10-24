@@ -16,7 +16,7 @@ import Notification from "./Notification";
 import EditStudent from "./EditStudent";
 import { useStudentStore } from "../../stores/studentStore";
 
-const ManageStudents = ({ sortedData, classCode }) => {
+const ManageStudents = ({ sortedData, classCode, refreshStudents }) => {
   const [searchTerm, setSearchTerm] = useState("");
   const [modalMessage, setModalMessage] = useState("");
   const [notificationMessage, setNotificationMessage] = useState("");
@@ -195,41 +195,50 @@ const ManageStudents = ({ sortedData, classCode }) => {
 
   const handleDeleteStudentConfirmation = async () => {
     if (selectedStudent.idNumber !== "" && selectedStudent.name !== "") {
-      console.log("Student selected");
-      console.log(selectedStudent.idNumber);
-      
       try {
         await deleteStudent(classCode, selectedStudent.idNumber);
-        console.log("Student deleted successfully");
+        setNotificationMessage("Student deleted successfully!");
+        setNotificationType("success");
+        refreshStudents();
       } catch (error) {
-        console.error("Error deleting student:", error); // Log any errors
+        setNotificationMessage("Error deleting student:", error);
+        setNotificationType("error");
       }
     } else if (selectedRowKeys.length === 1) {
       // Deleting a single student
       const studentId = selectedRows[0].studentId;
-      console.log("HERE");
-      console.log(studentId);
   
       try {
         await deleteStudent(classCode, studentId);
-        console.log("Student deleted successfully");
+        setNotificationMessage("Students deleted successfully!");
+        setNotificationType("success");
+        refreshStudents();
       } catch (error) {
-        console.error("Error deleting student:", error);
+        setNotificationMessage("Error deleting student:", error);
+        setNotificationType("error");
       }
     } else if (selectedRowKeys.length > 1) {
       const studentIds = selectedRows.map(row => row.studentId);
 
       try {
         await deleteMultipleStudents(classCode, studentIds);
-        console.log("Multiple students deleted successfully.");
+        setNotificationMessage("Students deleted successfully!");
+        setNotificationType("success");
+        refreshStudents();
       } catch (error) {
-        console.error("Error deleting multiple students:", error);
+        setNotificationMessage("Error deleting students:", error);
+        setNotificationType("error");
       }
     }
   
     setOpenDeleteStudent(false);
   };
-  
+
+  const closeNotification = () => {
+    setNotificationMessage("");
+    setNotificationType("");
+  }; 
+
   const handleDeleteModalClose = () => {
     setOpenDeleteStudent(false);
     setSelectedStudent({ idNumber: "", name: "" });
@@ -283,12 +292,11 @@ const ManageStudents = ({ sortedData, classCode }) => {
           <Flex gap={10}>
             <AddStudent 
               onSuccess={() => {
-                // setNotificationMessage("Student added successfully!");
-                // setNotificationType("success");
-                // window.location.reload();
-                console.log("Student added successfully!");
+                setNotificationMessage("Student added successfully!");
+                setNotificationType("success");
               }}
               classCode={classCode}
+              refreshStudents={refreshStudents}
             />
 
             <Button
@@ -331,13 +339,12 @@ const ManageStudents = ({ sortedData, classCode }) => {
         isOpen={openEditStudent}
         onClose={handleEditModalClose}
         onConfirm={() => {
-          // setNotificationMessage("Student edited successfully!");
-          // setNotificationType("success");
-          // window.location.reload();
-          console.log("Student edited successfully!");
+          setNotificationMessage("Student edited successfully!");
+          setNotificationType("success");
         }}
         idNumber={selectedStudent.idNumber}
         name={selectedStudent.name}
+        refreshStudents={refreshStudents}
       />
   
       {notificationMessage && (
