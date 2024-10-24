@@ -7,7 +7,7 @@ import { useStudentStore } from "../../stores/studentStore";
 import "../css/style.css";
 import { PlusOutlined } from "@ant-design/icons";
 
-const AddStudent = ({ onSuccess, classCode, refreshStudents }) => {
+const AddStudent = ({ onSuccess, classCode, refreshStudents, sortedData }) => {
   const [show, setShow] = useState(false);
   const [newStudent, setNewStudent] = useState({ idNumber: "", name: "" });
   const { addStudent, error, getAllStudents, allStudents } = useStudentStore();
@@ -33,7 +33,6 @@ const AddStudent = ({ onSuccess, classCode, refreshStudents }) => {
     if (name === "idNumber" && !/^\d{7}$/.test(value)) {
       validationErrors.idNumber = "ID number must be exactly 7 digits.";
     }
-
     if (name === "name" && !value.trim()) {
       validationErrors.name = "Name is required.";
     }
@@ -59,7 +58,6 @@ const AddStudent = ({ onSuccess, classCode, refreshStudents }) => {
     });
 
     setErrors(validationErrors);
-    console.log(`ClassCode: ${classCode}`);
 
     if (Object.keys(validationErrors).length === 0) {
       await addStudent(classCode, newStudent);
@@ -76,18 +74,23 @@ const AddStudent = ({ onSuccess, classCode, refreshStudents }) => {
     setNewStudent((prev) => ({ ...prev, idNumber: value }));
   
     const fieldErrors = validateField("idNumber", value);
-    setErrors((prevErrors) => ({ ...prevErrors, idNumber: fieldErrors.idNumber }));
+    const validationErrors = { ...fieldErrors };
   
-    if (!fieldErrors.idNumber) {
-      let fetchedStudent = null; 
-
+    if (sortedData.some((student) => String(student.idNumber) === String(value))) {
+      validationErrors.idNumber = "Student is already in this class";
+    }
+  
+    setErrors((prevErrors) => ({ ...prevErrors, idNumber: validationErrors.idNumber }));
+  
+    if (!validationErrors.idNumber) {
+      let fetchedStudent = null;
+  
       allStudents.forEach((student) => {
         if (String(student.idNumber) === String(value)) {
           fetchedStudent = student;
         }
       });
-
-      console.log("Fetched Student:", fetchedStudent);
+  
       if (fetchedStudent && fetchedStudent.name) {
         setNewStudent((prev) => ({ ...prev, name: fetchedStudent.name }));
       } else {

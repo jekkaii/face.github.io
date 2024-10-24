@@ -1069,11 +1069,6 @@
   color: var(--blue);
 }
 
-#uploadDescription p:first-child {
-  font-size: 26px;
-  color: var(--blue);
-}
-
 #supports {
   font-style: italic;
   font-size: small;

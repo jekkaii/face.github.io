@@ -1,10 +1,9 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React, { useState } from "react";
-import { Modal } from "react-bootstrap";
 import "../css/style.css";
 import uploadIcon from "../resources/Upload.png";
-import { Button } from "antd";
+import { Button, Modal } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import { useAttendanceStore } from "../../stores/attendanceStore"; 
 
@@ -59,91 +58,97 @@ const UploadClassPicture = ({ date, subjectAndCode, schedule }) => {
       </Button>
 
       <Modal
-        show={show}
-        onHide={handleClose}
-        backdrop="static"
-        keyboard={false}
-        size="lg"
-        aria-labelledby="contained-modal-title-vcenter"
-        centered
+        open={show}
+        onCancel={handleClose}
+        footer={null}
+        width={660}
+        className="create-class-modal"
       >
-        <Modal.Header closeButton></Modal.Header>
-        <Modal.Body>
-          <div className="text-center" id="uploadDescription">
-            <p className="mb-4 fw-bold">Upload Class Picture</p>
-            <p className="mb-0">
-              <b>Subject and Class Code: </b>
-              {subjectAndCode}
-            </p>
-            <p className="mb-0">
-              <b>Schedule: </b>
-              {schedule}
-            </p>
-            <p className="mb-5">
-              <b> Date: </b>
-              {date}
-            </p>
-          </div>
+        <h2 className="attendance-header">Upload Class Picture</h2>
 
-          <div className="text-center m-5" id="uploadCard">
-            <label htmlFor="input-file" id="previewArea">
-              <input
-                type="file"
-                accept="image/*"
-                id="input-file"
-                onChange={getFile}
-                hidden
-              />
-              {!file && (
-                <>
-                  <img
-                    className="img-fluid mt-5"
-                    src={uploadIcon}
-                    alt="upload icon"
-                    id="uploadIcon"
-                  />
-                  <p className="fw-bold mb-1" id="drag">
-                    Click here to upload image.
-                  </p>
-                  <p className="mb-5" id="supports">
-                    Supports: JPEG, JPG, and PNG
-                  </p>
-                </>
-              )}
+        <div className="text-center" id="uploadDescription">
+          <p className="mb-0">
+            <b>Subject and Class Code: </b>
+            {subjectAndCode}
+          </p>
+          <p className="mb-0">
+            <b>Schedule: </b>
+            {schedule}
+          </p>
+          <p className="mb-5">
+            <b> Date: </b>
+            {date}
+          </p>
+        </div>
 
-              {file && (
+        <div className="text-center m-4 mb-5" id="uploadCard">
+          <label htmlFor="input-file">
+            <input
+              type="file"
+              accept="image/*"
+              id="input-file"
+              onChange={getFile}
+              hidden
+            />
+            {!file && (
+              <>
                 <img
-                  src={URL.createObjectURL(file)} // Use the file object directly for preview
-                  alt="Preview"
-                  style={{
-                    maxWidth: "100%",
-                  }}
+                  className="img-fluid mt-5"
+                  src={uploadIcon}
+                  alt="upload icon"
+                  id="uploadIcon"
                 />
-              )}
-            </label>
-          </div>
+                <p className="fw-bold mb-1" id="drag">
+                  Click here to upload image.
+                </p>
+                <p className="mb-5" id="supports">
+                  Supports: JPEG, JPG, and PNG
+                </p>
+              </>
+            )}
 
-          <div className="text-center">
-            <Button
-              id="submitButton"
-              className="me-5 mb-4 fw-bold"
-              variant="primary"
-              onClick={handleSubmit} 
-              loading={isLoading || isSubmitting} // Disable when loading or submitting
-              disabled={isLoading || isSubmitting} // Disable button during loading or submitting
-            >
-              Submit
-            </Button>
-            <Button
-              id="cancelButton"
-              className="mb-4 fw-bold"
-              variant="danger"
-              onClick={handleClose}
-            >
-              Cancel
-            </Button>
-          </div>
-        </Modal.Body>
+            {file && (
+              <img
+                src={URL.createObjectURL(file)} // Use the file object directly for preview
+                alt="Preview"
+                style={{
+                  maxWidth: "100%",
+                }}
+              />
+            )}
+          </label>
+        </div>
+
+        <div className="text-center">
+          <Button
+            style = {{ 
+              marginRight: "30px",
+              padding: "20px 45px",
+              fontWeight: "bold",
+              fontSize: "16px",
+              backgroundColor: "#2a1f7e",
+              // padding: 10px 55px;
+              color: "white",
+            }}
+            variant="primary"
+            onClick={handleSubmit} 
+            loading={isLoading || isSubmitting} // Disable when loading or submitting
+            disabled={isLoading || isSubmitting} // Disable button during loading or submitting
+          >
+            Submit
+          </Button>
+          <Button
+            style = {{ 
+              padding: "20px 45px",
+              fontWeight: "bold",
+              fontSize: "16px",
+              color: "#2a1f7e",
+            }}
+            onClick={handleClose}
+          >
+            Cancel
+          </Button>
+        </div>
       </Modal>
     </>
   );

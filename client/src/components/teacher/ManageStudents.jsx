@@ -297,6 +297,7 @@ const ManageStudents = ({ sortedData, classCode, refreshStudents }) => {
               }}
               classCode={classCode}
               refreshStudents={refreshStudents}
+              sortedData={sortedData}
             />
 
             <Button
