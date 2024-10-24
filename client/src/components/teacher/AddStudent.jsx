@@ -60,7 +60,16 @@ const AddStudent = ({ onSuccess, classCode, refreshStudents, sortedData }) => {
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length === 0) {
-      await addStudent(classCode, newStudent);
+      const capitalizedName = newStudent.name
+        .toLowerCase()
+        .replace(/\b\w/g, char => char.toUpperCase());
+
+      const updatedStudent = {
+        ...newStudent,
+        name: capitalizedName,
+      };
+
+      await addStudent(classCode, updatedStudent);
       
       setNewStudent({ idNumber: "", name: "" });
       handleClose();
