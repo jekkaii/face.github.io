@@ -137,7 +137,8 @@ const AddStudent = ({ onSuccess, classCode }) => {
                 placeholder="Enter Name"
                 className={`form-control ${touchedFields.name && errors.name ? "no-margin" : ""}`}
                 value={newStudent.name}
-                readOnly
+                onChange={(e) => setNewStudent((prev) => ({ ...prev, name: e.target.value }))}
+                onBlur={(e) => handleBlur("name", e.target.value)}
                 required
               />
               {touchedFields.name && errors.name && (
