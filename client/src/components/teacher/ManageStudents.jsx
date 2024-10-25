@@ -3,13 +3,14 @@
 import React, { useState } from "react";
 import "../css/style.css";
 import Confirmation from "./Confirmation";
-import { Flex, Table, Button, Input, Dropdown } from "antd";
+import { Flex, Table, Button, Input, Dropdown, Upload } from "antd";
 import {
   IdcardOutlined,
   SearchOutlined,
   TagOutlined,
   MoreOutlined,
   DeleteOutlined,
+  UploadOutlined,
 } from "@ant-design/icons";
 import AddStudent from "./AddStudent";
 import Notification from "./Notification";
@@ -47,6 +48,24 @@ const ManageStudents = ({ sortedData, classCode, refreshStudents }) => {
   //     }
   //   },
   // };
+
+  const props = {
+    name: "file",
+    action: "http://localhost:3001/api/teacher/students/import",
+    headers: {
+      authorization: "authorization-text",
+    },
+    onChange(info) {
+      if (info.file.status !== "uploading") {
+        console.log(info.file, info.fileList);
+      }
+      if (info.file.status === "done") {
+        message.success(`${info.file.name} file uploaded successfully`);
+      } else if (info.file.status === "error") {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
+};
 
   // Dropdown menu
   const actionMenu = [
@@ -281,13 +300,10 @@ const ManageStudents = ({ sortedData, classCode, refreshStudents }) => {
           }}
         />
 
-        <Flex>
-          {/* <Upload {...props} on>
-            <Button>
-              <UploadOutlined className="fs-4" />
-            </Button>
-            
-          {/* </Upload> */}
+        <Flex gap={10}>
+            <Upload {...props}>
+                <Button icon={<UploadOutlined className="fs-4" />}>Upload File</Button>
+            </Upload>
 
           <Flex gap={10}>
             <AddStudent 
