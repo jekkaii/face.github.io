@@ -103,6 +103,7 @@ const ManageUsers = () => {
   const [isAddEditModalOpen, setIsAddEditModalOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [actionType, setActionType] = useState("");
+  const [selectedRole, setSelectedRole] = useState('');
 
 
   useEffect(() => {
@@ -178,15 +179,16 @@ const ManageUsers = () => {
 
   const filteredUsers = users.filter(
     (user) =>
-      user.firstName.toLowerCase().includes(searchTerm) ||
-      user.lastName.toLowerCase().includes(searchTerm) ||
-      user.email.toLowerCase().includes(searchTerm)
+      (selectedRole === '' || user.role === selectedRole) &&
+      (user.firstName.toLowerCase().includes(searchTerm) ||
+        user.lastName.toLowerCase().includes(searchTerm) ||
+        user.email.toLowerCase().includes(searchTerm))
   );
 
   return (
     <div className="container mt-5">
       {/* Search bar */}
-      <div className="d-flex justify-content-between align-items-center mb-3">
+      <div className="d-flex justify-content-between align-items-center mb-3">  
         <div style={{ position: "relative", maxWidth: "300px" }}>
           <input
             type="text"
@@ -207,13 +209,24 @@ const ManageUsers = () => {
             }}
           />
         </div>
-
+        <div style={{ marginRight: '200px' }}>
+    <select
+      value={selectedRole}
+      onChange={(e) => setSelectedRole(e.target.value)}
+      className="form-select"
+    >
+      <option value="">All</option>
+      <option value="Admin">Admin</option>
+      <option value="Teacher">Teacher</option>
+    </select>
+  </div>
+  
         <Button className="btn-primary" onClick={handleAddUser}>
           <FaPlus className="me-2" />
           ADD USER
         </Button>
       </div>
-
+      
       <Table bordered hover responsive className="user-table">
         <thead>
           <tr>
